@@ -1,0 +1,45 @@
+ssh -i C:\Users\nmcgrath\.ssh\nmcg_aws_key.pem ubuntu@ec2-50-17-132-155.compute-1.amazonaws.com
+
+Start carbon
+	sudo /opt/graphite/bin/carbon-cache.py start
+	
+Browse to Graphite web app
+	https://ec2-50-17-132-155.compute-1.amazonaws.com
+	username:demo password pass
+	
+Start statsd
+	cd /opt/statsd
+	node stats.js dConfig.js
+
+Verify up and running
+	Get internal IP address
+		ifconfig
+		10.211.158.240
+	echo "stats" | nc 10.211.158.240 8126 
+	http://blog.johngoulah.com/2012/10/looking-under-the-covers-of-statsd/
+
+	see whats on the wire
+	sudo tcpdump -t -A -s0 dst port 8125 | grep myapp.server1
+
+Web and Render Url
+http://ec2-50-17-132-155.compute-1.amazonaws.com:2003/render
+
+
+// counter - http status 
+https://ec2-50-17-132-155.compute-1.amazonaws.com/render?target=stats_counts.myapp.server1.*&height=800&width=1000&from=-12minutes
+https://ec2-50-17-132-155.compute-1.amazonaws.com/render?target=stats_counts.myapp.server1.*&height=800&width=1000&tz=UTC&title=HTTP Status Counts&colorList=green,yellow,red&from=-12minutes
+graphTypes = pie
+https://ec2-50-17-132-155.compute-1.amazonaws.com/render?graphType=pie&target=stats_counts.myapp.server1.200&target=stats_counts.myapp.server1.400&target=stats_counts.myapp.server1.500&height=800&width=1000&tz=UTC&title=HTTP Status Pie Chart&colorList=green,yellow,red&from=-12minutes
+
+drawAsInfinite
+https://ec2-50-17-132-155.compute-1.amazonaws.com/render?target=drawAsInfinite%28stats_counts.events.deploy.myapp%29&target=stats_counts.myapp.server1.*&height=800&width=1000&tz=UTC&title=HTTP Status Counts&colorList=green,yellow,red&from=-12minutes
+
+
+// timer
+https://ec2-50-17-132-155.compute-1.amazonaws.com/render/?target=stats.timers.noel.timmer2.lower&target=stats.timers.noel.timmer2.upper&target=stats.timers.noel.timmer2.mean&width=586&height=308&tz=UTC&title=Timer 2 Response times&from=-12minutes
+https://ec2-50-17-132-155.compute-1.amazonaws.com/render?target=stats.timers.noel.timmer2.sum&height=800&width=600&from=-12minutes
+
+
+
+
+target=sumSeries(graphite.counterName) 
